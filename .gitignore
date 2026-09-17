@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# ML artifacts (regenerate with train.py, or keep committed model.pkl if desired)
+backend/app/ml/*.pkl
+backend/app/ml/*.keras
+backend/app/ml/training_metrics.json
+dataset/*.csv
+
+# Env
+.env
+*.env.local
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
