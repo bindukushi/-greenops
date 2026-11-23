@@ -98,7 +98,7 @@ testing strategy: [`docs/TESTING.md`](docs/TESTING.md).
 
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate      # optional but recommended
+python -m venv .venv && source .venv/bin/activate  .\.venv\Scripts\Activate.ps1    # optional but recommended
 pip install -r requirements.txt
 
 cp .env.example .env                                     # edit if you have a real Mongo URI

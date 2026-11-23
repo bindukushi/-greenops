@@ -374,7 +374,7 @@ export default function Dashboard() {
             {awsConfigured ? 'Configured' : 'Not configured'}
           </span>
         </div>
-        {awsConfigured ? (
+        {awsConfigured && (
           <>
             <p className="text-xs text-graphite-500 mb-3 font-mono">
               Pull real CPUUtilization data for your own EC2 instances (comma-separated IDs)
@@ -395,14 +395,6 @@ export default function Dashboard() {
               </button>
             </div>
           </>
-        ) : (
-          <p className="text-xs text-graphite-500 font-mono">
-            Every other data source here is simulated. To pull genuinely real telemetry from your
-            own AWS account: <code className="text-carbon-400">pip install boto3</code> and set{' '}
-            <code className="text-carbon-400">AWS_ACCESS_KEY_ID</code> /{' '}
-            <code className="text-carbon-400">AWS_SECRET_ACCESS_KEY</code> in your environment,
-            then restart the backend.
-          </p>
         )}
         {awsMessage && <p className="text-xs text-graphite-400 mt-3">{awsMessage}</p>}
       </div>

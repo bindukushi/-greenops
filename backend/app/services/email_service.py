@@ -9,7 +9,6 @@ load_dotenv()
 
 
 def send_alert_email(subject: str, message: str) -> bool:
-
     sender_email = os.getenv("GMAIL_SENDER")
     app_password = os.getenv("GMAIL_APP_PASSWORD")
     receiver_email = os.getenv("ALERT_RECEIVER")
@@ -30,52 +29,48 @@ def send_alert_email(subject: str, message: str) -> bool:
         print("❌ ALERT_RECEIVER is missing")
         return False
 
-    email = MIMEMultipart()
-    email["From"] = sender_email
-    email["To"] = receiver_email
-    email["Subject"] = subject
-
-    email.attach(MIMEText(message, "plain"))
-
     try:
+        msg = MIMEMultipart()
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(message, "plain"))
+
         print("Connecting to Gmail SMTP...")
 
         with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
+            server.ehlo()
 
             print("Starting TLS...")
             server.starttls()
 
+            server.ehlo()
+
             print("Logging into Gmail...")
-            server.login(sender_email, app_password)
+            server.login(sender_email, app_password.replace(" ", ""))
 
             print("Sending email...")
             server.sendmail(
                 sender_email,
                 receiver_email,
-                email.as_string()
+                msg.as_string()
             )
 
-        print("✅ ALERT EMAIL SENT SUCCESSFULLY")
-        print("================================\n")
-
+        print("✅ Email sent successfully!")
         return True
 
-    except smtplib.SMTPAuthenticationError as e:
+    except smtplib.SMTPAuthenticationError:
         print("❌ Gmail authentication failed.")
-        print("Check that:")
-        print("1. Gmail address is correct")
-        print("2. 2-Step Verification is enabled")
-        print("3. Gmail App Password is correct")
-        print("4. The App Password was not revoked")
-        print("Error:", e)
-        return False
+        print("Check that GMAIL_APP_PASSWORD is a valid Gmail App Password.")
 
-    except smtplib.SMTPException as e:
-        print("❌ Gmail SMTP error:")
-        print(e)
-        return False
+    except smtplib.SMTPConnectError as e:
+        print("❌ Could not connect to Gmail SMTP:", e)
+
+    except TimeoutError:
+        print("❌ Gmail SMTP connection timed out.")
 
     except Exception as e:
-        print("❌ Unexpected email error:")
-        print(type(e).__name__, e)
-        return False
+        print("❌ Gmail SMTP error:", e)
+
+    return False
